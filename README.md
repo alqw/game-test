@@ -22,11 +22,11 @@ wally install
 
 ## Run
 ``` bash
-lune run dev.luau
+lune run dev
 ```
 
 ### Build
 ``` bash
-lune run build.luau
+lune run build
 # bin/Game.rbxl
 ```

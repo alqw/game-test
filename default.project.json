@@ -43,6 +43,10 @@
       }
     },
     "Lighting": {
+      "$className": "Lighting",
+      "$properties": {
+        "Technology": "Future"
+      },
       "$path": "assets/lightning_gen"
     }
   }
