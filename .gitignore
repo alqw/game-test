@@ -1,0 +1,18 @@
+# Project place file
+/03.rbxlx
+
+# Roblox Studio lock files
+/*.rbxlx.lock
+/*.rbxl.lock
+
+sourcemap.json
+
+base.project.json
+
+Packages
+
+dist
+
+wally.lock
+
+bin

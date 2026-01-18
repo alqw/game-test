@@ -1,0 +1,35 @@
+{
+  "generator": "readable", 
+  "rules": [
+    "remove_comments",
+    "remove_spaces",
+    "remove_nil_declaration",
+    "remove_empty_do",
+    "remove_unused_if_branch",
+    "remove_unused_while",
+    "filter_after_early_return",
+    "compute_expression",
+    {
+      "rule": "inject_global_value",
+      "identifier": "DEBUG",
+      "value": false
+    },
+    {
+      "rule": "convert_require",
+      "current": {
+        "name": "path",
+        "sources": {
+          "@pkg": "Packages",
+          "@shared": "src/shared",
+          "@server": "src/server",
+          "@client": "src/client"
+        }
+      },
+      "target": {
+        "name": "roblox",
+        "indexing_style": "property",
+        "rojo_sourcemap": "sourcemap.json"
+      }
+    }
+  ]
+}

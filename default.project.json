@@ -1,0 +1,49 @@
+{
+  "name": "03",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "CoinCollected": {
+        "$className": "RemoteEvent"
+      },
+      "GateOpened": {
+        "$className": "RemoteEvent"
+      },
+      "PuzzleUpdate": {
+        "$className": "RemoteEvent"
+      },
+      "ShowWinUI": {
+        "$className": "RemoteEvent"
+      },
+      "Shared": {
+        "$path": "dist/shared"
+      },
+      "Packages": {
+        "$path": "Packages"
+      },
+      "Templates": {
+        "$path": "assets/templates_gen"
+      }
+    },
+    "ServerScriptService": {
+      "Server": {
+        "$path": "dist/server"
+      }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Client": {
+          "$path": "dist/client"
+        }
+      }
+    },
+    "Workspace": {
+      "World": {
+        "$path": "assets/static_gen"
+      }
+    },
+    "Lighting": {
+      "$path": "assets/lightning_gen"
+    }
+  }
+}
