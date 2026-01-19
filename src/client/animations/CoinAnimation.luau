@@ -7,6 +7,11 @@ local CoinsFolder = workspace:WaitForChild("World"):WaitForChild("Coins")
 local CoinAnimation = {}
 local activeCoins = {}
 
+local TaskUtil = require("@shared/utils/TaskUtil")
+
+local eventConnection: RBXScriptConnection? = nil
+local mainTween: any = nil
+
 local function registerCoin(instance: Instance)
 	if not instance:IsA("BasePart") or activeCoins[instance] then
 		return
@@ -44,6 +49,8 @@ function CoinAnimation.PlayCollectEffect(part: BasePart)
 end
 
 function CoinAnimation.Start()
+	CoinAnimation.Stop()
+
 	for _, instance in ipairs(CoinsFolder:GetChildren()) do
 		registerCoin(instance)
 	end
@@ -51,20 +58,29 @@ function CoinAnimation.Start()
 	CoinsFolder.ChildAdded:Connect(registerCoin)
 
 	local function StartCycle()
-		local tween = Ripple.createTween(0, {
+		mainTween = Ripple.createTween(0, {
 			easing = "linear",
 			duration = 5,
 			start = true,
 		})
-		tween:setGoal(360)
+		mainTween:setGoal(360)
 
-		tween:onComplete(StartCycle)
+		mainTween:onComplete(function()
+			if mainTween then
+				StartCycle()
+			end
+		end)
 
-		tween:onChange(function(value)
+		mainTween:onChange(function(value)
 			local amplitude = 0.5
 			local rotationAngle = math.rad(value)
 
 			for part, data in pairs(activeCoins) do
+				if not part.Parent then
+					activeCoins[part] = nil
+					continue
+				end
+
 				local verticalOffset = math.sin(rotationAngle + data.phase) * amplitude
 				local finalRotation = data.startRotation + rotationAngle
 
@@ -76,6 +92,17 @@ function CoinAnimation.Start()
 	end
 
 	StartCycle()
+end
+
+function CoinAnimation.Stop()
+	eventConnection = TaskUtil.Disconnect(eventConnection, script.Name)
+
+	if mainTween then
+		mainTween:stop()
+		mainTween = nil
+	end
+
+	table.clear(activeCoins)
 end
 
 return CoinAnimation

@@ -1,15 +1,24 @@
 --!strict
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UIStore = require("@shared/state/UIStore")
-local Remote = ReplicatedStorage:WaitForChild("ShowWinUI") :: RemoteEvent
+local Net = require("@shared/remote/net")
 
 local WinUIController = {}
 
+local TaskUtil = require("@shared/utils/TaskUtil")
+
+local eventConnection: RBXScriptConnection? = nil
+
 function WinUIController.Start()
-	Remote.OnClientEvent:Connect(function()
+	WinUIController.Stop()
+
+	eventConnection = Net.ShowWinUI.OnClientEvent:Connect(function()
 		UIStore.setWinVisible(true)
 	end)
+end
+
+function WinUIController.Stop()
+	eventConnection = TaskUtil.Disconnect(eventConnection, script.Name)
 end
 
 return WinUIController

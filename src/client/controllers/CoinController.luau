@@ -1,20 +1,29 @@
 --!strict
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Remote = ReplicatedStorage:WaitForChild("CoinCollected") :: RemoteEvent
+local Net = require("@shared/remote/net/")
+
+local TaskUtil = require("@shared/utils/TaskUtil")
 
 local Store = require("@shared/state/Store")
 local CoinAnimation = require("@client/animations/CoinAnimation")
 
 local CoinController = {}
 
+local eventConnection: RBXScriptConnection? = nil
+
 function CoinController.Start()
-	Remote.OnClientEvent:Connect(function(coinPart: BasePart)
+	CoinController.Stop()
+
+	eventConnection = Net.CoinCollected.OnClientEvent:Connect(function(coinPart: BasePart)
 		if coinPart and coinPart.Parent then
 			Store.addCoins(1)
 			CoinAnimation.PlayCollectEffect(coinPart)
 		end
 	end)
+end
+
+function CoinController.Stop()
+	eventConnection = TaskUtil.Disconnect(eventConnection, script.Name)
 end
 
 return CoinController

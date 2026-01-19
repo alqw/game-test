@@ -1,5 +1,7 @@
 --!strict
 
+local TaskUtil = require("@shared/utils/TaskUtil")
+
 local function main()
 	InitLogic()
 end
@@ -9,9 +11,9 @@ function InitLogic()
 	local GateLogic = require("@server/logic/GateLogic")
 	local PuzzleLogic = require("@server/logic/PuzzleLogic")
 
-	CoinLogic.Start()
-	GateLogic.Start()
-	PuzzleLogic.Start()
+	TaskUtil.SafeInit("CoinLogic", CoinLogic.Start)
+	TaskUtil.SafeInit("GateLogic", GateLogic.Start)
+	TaskUtil.SafeInit("PuzzleLogic", PuzzleLogic.Start)
 end
 
 main()

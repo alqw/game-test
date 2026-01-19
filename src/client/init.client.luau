@@ -3,10 +3,14 @@
 local React = require("@pkg/React")
 local ReactRoblox = require("@pkg/ReactRoblox")
 
+local TaskUtil = require("@shared/utils/TaskUtil")
+
 local Players = game:GetService("Players")
 
+local uiRoot: any = nil
+
 local function main()
-	InitUI()
+	TaskUtil.SafeInit("InitUI", InitUI)
 	InitAnimations()
 	InitControllers()
 end
@@ -18,8 +22,13 @@ function InitUI()
 	local player = Players.LocalPlayer
 	local playerGui = player:WaitForChild("PlayerGui")
 
-	local root = ReactRoblox.createRoot(playerGui)
-	root:render(React.createElement(React.Fragment, {}, {
+	if uiRoot then
+		uiRoot:unmount()
+		uiRoot = nil
+	end
+
+	uiRoot = ReactRoblox.createRoot(playerGui)
+	uiRoot:render(React.createElement(React.Fragment, {}, {
 		HUD = React.createElement(HUDGui),
 		Win = React.createElement(WinGui),
 	}))
@@ -28,7 +37,7 @@ end
 function InitAnimations()
 	local CoinAnimation = require("@client/animations/CoinAnimation")
 
-	CoinAnimation.Start()
+	TaskUtil.SafeInit("CoinAnimation", CoinAnimation.Start)
 end
 
 function InitControllers()
@@ -37,10 +46,10 @@ function InitControllers()
 	local PuzzleController = require("@client/controllers/PuzzleController")
 	local WinUIController = require("@client/controllers/WinUIController")
 
-	CoinController.Start()
-	GateController.Start()
-	PuzzleController.Start()
-	WinUIController.Start()
+	TaskUtil.SafeInit("CoinController", CoinController.Start)
+	TaskUtil.SafeInit("GateController", GateController.Start)
+	TaskUtil.SafeInit("PuzzleController", PuzzleController.Start)
+	TaskUtil.SafeInit("WinUIController", WinUIController.Start)
 end
 
 main()

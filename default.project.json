@@ -3,17 +3,20 @@
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {
-      "CoinCollected": {
-        "$className": "RemoteEvent"
-      },
-      "GateOpened": {
-        "$className": "RemoteEvent"
-      },
-      "PuzzleUpdate": {
-        "$className": "RemoteEvent"
-      },
-      "ShowWinUI": {
-        "$className": "RemoteEvent"
+      "Remotes": {
+        "$className": "Folder",
+        "CoinCollected": {
+          "$className": "RemoteEvent"
+        },
+        "GateOpened": {
+          "$className": "RemoteEvent"
+        },
+        "PuzzleUpdate": {
+          "$className": "RemoteEvent"
+        },
+        "ShowWinUI": {
+          "$className": "RemoteEvent"
+        }
       },
       "Shared": {
         "$path": "dist/shared"

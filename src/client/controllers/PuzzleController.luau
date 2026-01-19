@@ -1,26 +1,44 @@
 --!strict
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local PuzzleAnimation = require("@client/animations/PuzzleAnimation")
-local Remote = ReplicatedStorage:WaitForChild("PuzzleUpdate") :: RemoteEvent
+local Net = require("@shared/remote/net")
 
 local PuzzleController = {}
 
-function PuzzleController.Start()
-	local world = workspace:WaitForChild("World")
+local TaskUtil = require("@shared/utils/TaskUtil")
+local Config = require("@shared/constants/Config")
 
-	Remote.OnClientEvent:Connect(function(buttonsState, lightsState)
-		for i = 1, 3 do
-			local btn = world.Buttons:FindFirstChild("Button0" .. i)
+local eventConnection: RBXScriptConnection? = nil
+
+function PuzzleController.Start()
+	PuzzleController.Stop()
+	PuzzleAnimation.Reset()
+
+	local world = workspace:WaitForChild("World")
+	local buttonsFolder = world:WaitForChild("Buttons")
+
+	eventConnection = Net.PuzzleUpdate.OnClientEvent:Connect(function(state, lightsState)
+		for i = 1, Config.BUTTON_COUNT do
+			local btn = buttonsFolder:FindFirstChild("Button0" .. i)
 			if btn then
-				PuzzleAnimation.Animate(btn, buttonsState[i])
+				PuzzleAnimation.Animate(btn, state.buttons[i])
 			end
 		end
 
-		local lights = world.Lights
-		PuzzleAnimation.Animate(lights.Light01, lightsState.light1)
-		PuzzleAnimation.Animate(lights.Light02, lightsState.light2)
-		PuzzleAnimation.Animate(lights.Light03, lightsState.light3)
+		local lightsFolder = world.Lights
+		for i = 1, Config.LIGHT_COUNT do
+			local lightName = "Light0" .. i
+			local lightPart = lightsFolder:FindFirstChild(lightName)
+
+			if lightPart then
+				local isOn = lightsState["light" .. i] == true
+				PuzzleAnimation.Animate(lightPart, isOn)
+			end
+		end
 	end)
+end
+
+function PuzzleController.Stop()
+	eventConnection = TaskUtil.Disconnect(eventConnection, script.Name)
 end
 
 return PuzzleController
